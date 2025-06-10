@@ -125,4 +125,4 @@ Your response should include:
                 st.error(f"❌ Error: {str(e)}")
 
 st.markdown("---")
-st.caption("Made with ❤️ using Streamlit and Gemini AI")
+st.caption("Made by Dhinakar S ❤️")
