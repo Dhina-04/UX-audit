@@ -3,37 +3,44 @@ import google.generativeai as genai
 from PIL import Image
 
 # --- Configure Gemini API ---
-genai.configure(api_key="AIzaSyDEl99LtXjbWHJjqm9X-unxzotXaL7qTU0")  # Replace with your actual API key
+genai.configure(api_key="YOUR_API_KEY")  # Replace with your actual API key
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 # --- Streamlit UI Setup ---
 st.set_page_config(page_title="Design Audit Bot", layout="wide")
 st.title("🧠 Design Audit Bot – AI-Powered UX Feedback")
+st.caption("Analyze UI screens and get expert UX improvement tips from an AI co-pilot.")
 
-st.markdown("Use AI to review and improve your UI design based on best practices and real-world UX insights.")
+st.markdown("---")
 
-# --- Input Section ---
-st.markdown("### 👤 Context: Who is this design for?")
-persona = st.text_input("User Persona", placeholder="e.g., First-time mobile banking user, Gen Z e-commerce shopper")
+# --- UI: Split layout for inputs ---
+col1, col2 = st.columns([1, 1.2])
 
-needs = st.text_area("User Needs", placeholder="e.g., Quickly check balances, easy checkout, trustworthiness")
+with col1:
+    st.subheader("👤 User Context")
+    persona = st.text_input("User Persona", placeholder="e.g., First-time banking user, Gen Z shopper")
+    needs = st.text_area("User Needs", placeholder="e.g., Easily transfer funds, find best deals")
+    goals = st.text_area("User Goals", placeholder="e.g., Buy item in 2 clicks, access quickly")
+    success_metrics = st.text_input("Success Metrics (optional)", placeholder="e.g., NPS, bounce rate")
 
-goals = st.text_area("User Goals", placeholder="e.g., Complete purchase within 2 minutes, find top deals easily")
+with col2:
+    st.subheader("📋 UI Input")
+    st.markdown("**Option 1** – Describe your UI (HTML/CSS or plain English)")
+    input_text = st.text_area("✍️ Paste your UI description or code", height=200)
 
-success_metrics = st.text_input("Success Metrics (Optional)", placeholder="e.g., Task completion rate, NPS, bounce rate")
+    st.markdown("**Option 2** – Upload a UI Screenshot")
+    uploaded_image = st.file_uploader("Upload image (PNG, JPG)", type=["png", "jpg", "jpeg"])
 
-st.markdown("### 📋 Option 1: Describe your screen (HTML/CSS or plain English)")
-input_text = st.text_area("✍️ Paste HTML/CSS or describe your UI", height=250)
-
-st.markdown("### 🖼️ Option 2: Upload a Screenshot (PNG/JPG)")
-uploaded_image = st.file_uploader("Upload a UI screenshot", type=["png", "jpg", "jpeg"])
+st.markdown("---")
 
 # --- Run UX Audit ---
-if st.button("Run UX Audit"):
+run_audit = st.button("🚀 Run UX Audit")
+
+if run_audit:
     if not input_text.strip() and uploaded_image is None:
-        st.warning("⚠️ Please enter a description or upload an image.")
+        st.warning("⚠️ Please enter a UI description or upload a screenshot to proceed.")
     else:
-        with st.spinner("🔍 Analyzing with Gemini..."):
+        with st.spinner("🔍 Analyzing your design with Gemini..."):
             try:
                 # Format shared context
                 context = f"""
@@ -64,7 +71,7 @@ Your response should include:
 """
                     response = model.generate_content([prompt, image])
                     st.success("✅ Image Audit Complete")
-                    st.image(image, caption="Uploaded UI Screenshot", use_column_width=True)
+                    st.image(image, caption="Uploaded Screenshot", use_column_width=True)
                     st.markdown("### 💡 UX Suggestions")
                     st.write(response.text)
 
@@ -96,3 +103,6 @@ Provide:
 
             except Exception as e:
                 st.error(f"❌ Error: {str(e)}")
+
+st.markdown("---")
+st.caption("Made with ❤️ using Streamlit and Gemini AI")
