@@ -4,7 +4,7 @@ from PIL import Image
 import io
 
 # --- Configure Gemini API ---
-genai.configure(api_key="AIzaSyDEl99LtXjbWHJjqm9X-unxzotXaL7qTU0")  # Replace with your actual API key
+genai.configure(api_key="AIzaSyDEl99LtXjbWHJjqm9X-unxzotXaL7qTU0") 
 model = genai.GenerativeModel("gemini-2.0-flash")
 
 # --- Streamlit UI Setup ---
